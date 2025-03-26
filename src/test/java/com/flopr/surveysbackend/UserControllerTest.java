@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
-import org.h2.engine.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ public class UserControllerTest {
     @Autowired
     UserRepository userRepository;
 
-    @BeforeEach
+    @AfterEach
     public void cleanup() {
 
         userRepository.deleteAll();
@@ -253,7 +253,7 @@ public class UserControllerTest {
     }
 
 
-    private <T> ResponseEntity<T> getUser(String token, ParameterizedTypeReference<T> responseType ) {
+    private <T> ResponseEntity<T> getUser(String token, ParameterizedTypeReference<T> responseType) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
@@ -267,9 +267,12 @@ public class UserControllerTest {
 
         HttpEntity<UserLoginRequestModel> entity = new HttpEntity<UserLoginRequestModel>(data, new HttpHeaders());
         return testRestTemplate.exchange(API_LOGIN_URL, HttpMethod.POST, entity, responseType);
+
     } 
 
     private <T> ResponseEntity<T> register(UserRegisterRequestModel data, Class<T> responseType) {
+
         return testRestTemplate.postForEntity(API_URL, data, responseType);
+
     }
 }

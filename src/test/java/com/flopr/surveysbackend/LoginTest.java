@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,7 +39,7 @@ public class LoginTest {
     @Autowired
     UserRepository userRepository;
 
-    @BeforeEach
+    @AfterEach
     public void cleanup() {
 
         userRepository.deleteAll();
@@ -112,12 +112,15 @@ public class LoginTest {
     }
 
     private <T> ResponseEntity<T> login(UserLoginRequestModel data, Class<T> responseType) {
+
         return testRestTemplate.postForEntity(API_LOGIN_URL, data, responseType);
+
     }
 
     private <T> ResponseEntity<T> login(UserLoginRequestModel data, ParameterizedTypeReference<T> responseType ) {
 
         HttpEntity<UserLoginRequestModel> entity = new HttpEntity<UserLoginRequestModel>(data, new HttpHeaders());
         return testRestTemplate.exchange(API_LOGIN_URL, HttpMethod.POST, entity, responseType);
+
     } 
 }
