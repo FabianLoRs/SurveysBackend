@@ -8,5 +8,8 @@ import com.flopr.surveysbackend.entities.PollEntity;
 @Repository
 public interface PollRepository extends CrudRepository<PollEntity, Long> {
     
-    public PollEntity findByPollId(String pollId);
+    PollEntity findByPollId(String pollId);
+
+    PollEntity findById(long id);
+    
 }

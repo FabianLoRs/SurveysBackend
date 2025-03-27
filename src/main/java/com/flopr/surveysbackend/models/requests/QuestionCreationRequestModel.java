@@ -32,4 +32,5 @@ public class QuestionCreationRequestModel {
     @NotEmpty
     @Size(min = 1, max = 10)
     private List<AnswerCreationRequestModel> answers;
+    
 }
