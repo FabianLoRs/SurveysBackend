@@ -28,12 +28,13 @@ public class PollReplyServiceImpl implements PollReplyService {
     public long createPollReply(PollReplyRequestModel model) {
 
         ModelMapper mapper = new ModelMapper();
-
         mapper.getConfiguration().setAmbiguityIgnored(true);
 
         PollReplyEntity pollReply = mapper.map(model, PollReplyEntity.class);
-
         PollEntity poll = pollRepository.findById(model.getPoll());
+        
+        // Asignar la encuesta persistida a la respuesta
+        pollReply.setPoll(poll);
 
         Set<Long> uniqueReplies = new HashSet<>();
 

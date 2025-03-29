@@ -42,4 +42,6 @@ public class PollEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "poll")
     private List<QuestionEntity> questions = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "poll")
+    private List<PollReplyEntity> replies = new ArrayList<>();
 }

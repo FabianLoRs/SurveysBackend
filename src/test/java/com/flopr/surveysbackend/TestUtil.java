@@ -18,53 +18,37 @@ import com.flopr.surveysbackend.models.requests.QuestionCreationRequestModel;
 import com.flopr.surveysbackend.models.requests.UserRegisterRequestModel;
 
 public class TestUtil {
-    
     public static UserRegisterRequestModel createValidUser() {
 
         UserRegisterRequestModel user = new UserRegisterRequestModel();
-
         user.setEmail(generateRandomString(16) + "@mail.com");
-
         user.setName(generateRandomString(8));
-
         user.setPassword(generateRandomString(8));
-
+        
         return user;
-
     }
 
     public static PollCreationRequestModel createValidPoll() { 
-
         ArrayList<AnswerCreationRequestModel> answers = new ArrayList<>();
-
         AnswerCreationRequestModel answer = new AnswerCreationRequestModel();
-
         answer.setContent(generateRandomString(16));
-
         answers.add(answer);
 
         ArrayList<QuestionCreationRequestModel> questions = new ArrayList<>();
 
         QuestionCreationRequestModel question = new QuestionCreationRequestModel();
-
         question.setContent(generateRandomString(16));
-
         question.setQuestionOrder(1);
-
         question.setType("CHECKBOX");
-
         question.setAnswers(answers);
-
         questions.add(question);
 
         PollCreationRequestModel poll = new PollCreationRequestModel();
-
         poll.setContent(generateRandomString(16));
         poll.setOpened(true);
         poll.setQuestions(questions);
 
         return poll;
-        
     }
 
     public static PollReplyRequestModel createValidPollReply(PollEntity poll) {
