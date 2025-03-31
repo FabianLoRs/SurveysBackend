@@ -19,7 +19,6 @@ import com.flopr.surveysbackend.models.requests.UserRegisterRequestModel;
 
 public class TestUtil {
     public static UserRegisterRequestModel createValidUser() {
-
         UserRegisterRequestModel user = new UserRegisterRequestModel();
         user.setEmail(generateRandomString(16) + "@mail.com");
         user.setName(generateRandomString(8));

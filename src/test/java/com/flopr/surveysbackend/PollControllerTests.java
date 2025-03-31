@@ -34,6 +34,7 @@ import com.flopr.surveysbackend.models.requests.UserLoginRequestModel;
 import com.flopr.surveysbackend.models.requests.UserRegisterRequestModel;
 import com.flopr.surveysbackend.models.responses.PaginatedPollRest;
 import com.flopr.surveysbackend.models.responses.PollRest;
+import com.flopr.surveysbackend.models.responses.PollResultWrapperRest;
 import com.flopr.surveysbackend.models.responses.ValidationErrors;
 import com.flopr.surveysbackend.repositories.PollRepository;
 import com.flopr.surveysbackend.repositories.UserRepository;
@@ -466,7 +467,7 @@ public class PollControllerTests {
     
     // #endregion
     
-    // #region deletePoll
+    // #region deletePoll 
 
     @Test
     public void deletePoll_withOutAuthentication_returnForbidden() { 
@@ -502,6 +503,55 @@ public class PollControllerTests {
     }
     
     // #endregion
+
+    // #region getResults
+
+    @Test
+    public void getResults_withOutAuthentication_returnForbidden() { 
+        ResponseEntity<Object> response = getResults(false, "abc", new ParameterizedTypeReference<Object>(){});
+        
+        assertEquals(response.getStatusCode(), HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    public void getResults_withAuthenticationTheSurveyDoesNotExist_returnInternalServerError() {
+        PollEntity poll = pollRepository.save(TestUtil.createValidPollEntity(user));
+
+        ResponseEntity<Object> response = getResults(true, poll.getPollId() + "abc", new ParameterizedTypeReference<Object>(){});
+        
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Test
+    public void getResults_withAuthenticationTheSurveyIsNotOwnedByTheUser_returnInternalServerError() {
+        UserEntity otherUser = userService.createUser(TestUtil.createValidUser());
+
+        PollEntity poll = pollRepository.save(TestUtil.createValidPollEntity(otherUser));
+
+        ResponseEntity<Object> response = getResults(true, poll.getPollId(), new ParameterizedTypeReference<Object>(){});
+        
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Test
+    public void getResults_withAuthenticationTheSurveyOwnedByTheUser_returnOk() {
+        PollEntity poll = pollRepository.save(TestUtil.createValidPollEntity(user));
+
+        ResponseEntity<Object> response = getResults(true, poll.getPollId(), new ParameterizedTypeReference<Object>(){});
+        
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+    }
+
+    @Test
+    public void getResults_withAuthenticationTheSurveyOwnedByTheUser_returnPollResultWrapperRest() {
+        PollEntity poll = pollRepository.save(TestUtil.createValidPollEntity(user));
+
+        ResponseEntity<PollResultWrapperRest> response = getResults(true, poll.getPollId(), new ParameterizedTypeReference<PollResultWrapperRest>(){});
+        
+        assertEquals(poll.getContent(), response.getBody().getContent());
+    }
+
+    // #endregion getResults
 
     public <T> ResponseEntity<T> togglePollOpened(boolean auth, String pollId, ParameterizedTypeReference<T> responseType) {
         HttpHeaders headers = new HttpHeaders();
@@ -562,6 +612,17 @@ public class PollControllerTests {
         
         HttpEntity<Object> entity = new HttpEntity<Object>(null, headers);
 
+        return testRestTemplate.exchange(url, HttpMethod.GET, entity, responseType);
+    }
+
+    public <T> ResponseEntity<T> getResults(boolean auth, String pollId, ParameterizedTypeReference<T> responseType) {
+        HttpHeaders headers = new HttpHeaders();
+        if (auth) {
+            headers.setBearerAuth(token);
+        }
+        
+        HttpEntity<Object> entity = new HttpEntity<Object>(null, headers);
+        String url = API_URL + "/" + pollId + "/results";
         return testRestTemplate.exchange(url, HttpMethod.GET, entity, responseType);
     }
     

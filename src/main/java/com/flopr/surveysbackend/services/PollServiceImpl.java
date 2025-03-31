@@ -1,5 +1,6 @@
 package com.flopr.surveysbackend.services;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
@@ -12,6 +13,7 @@ import com.flopr.surveysbackend.entities.AnswerEntity;
 import com.flopr.surveysbackend.entities.PollEntity;
 import com.flopr.surveysbackend.entities.QuestionEntity;
 import com.flopr.surveysbackend.entities.UserEntity;
+import com.flopr.surveysbackend.interfaces.PollResult;
 import com.flopr.surveysbackend.models.requests.PollCreationRequestModel;
 import com.flopr.surveysbackend.repositories.PollRepository;
 import com.flopr.surveysbackend.repositories.UserRepository;
@@ -104,5 +106,18 @@ public class PollServiceImpl implements PollService {
         }
 
         pollRepository.delete(poll);
+    }
+
+    @Override
+    public List<PollResult> getResults(String pollId, String email) {
+        UserEntity user = userRepository.findByEmail(email);
+
+        PollEntity poll = pollRepository.findByPollIdAndUserId(pollId, user.getId());
+
+        if (poll == null) {
+            throw new RuntimeException("Poll not found");
+        }
+
+        return pollRepository.getPollResults(poll.getId());
     }
 }

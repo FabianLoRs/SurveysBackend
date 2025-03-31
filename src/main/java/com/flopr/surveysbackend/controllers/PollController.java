@@ -1,9 +1,12 @@
 package com.flopr.surveysbackend.controllers;
 
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.tomcat.jni.Poll;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,11 +22,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flopr.surveysbackend.entities.PollEntity;
+import com.flopr.surveysbackend.interfaces.PollResult;
 import com.flopr.surveysbackend.models.requests.PollCreationRequestModel;
 import com.flopr.surveysbackend.models.responses.CreatedPollRest;
 import com.flopr.surveysbackend.models.responses.PaginatedPollRest;
 import com.flopr.surveysbackend.models.responses.PollRest;
+import com.flopr.surveysbackend.models.responses.PollResultRest;
+import com.flopr.surveysbackend.models.responses.PollResultWrapperRest;
 import com.flopr.surveysbackend.services.PollService;
+import com.flopr.surveysbackend.utils.transformer.PollResultTransformer;
 
 
 @RestController
@@ -82,4 +89,16 @@ public class PollController {
     public void deletePoll(@PathVariable String id, Authentication authentication) {
         pollService.deletePoll(id, authentication.getPrincipal().toString());
     }
+
+    @GetMapping(path = "/{id}/results")
+    public PollResultWrapperRest getResult(@PathVariable String id,Authentication authentication) {
+        List<PollResult> results = pollService.getResults(id, authentication.getPrincipal().toString());
+
+        PollEntity poll = pollService.getPoll(id);
+
+        PollResultTransformer transformer = new PollResultTransformer();
+
+        return new PollResultWrapperRest(transformer.transformData(results), poll.getContent(), poll.getId());
+    }
+    
 }

@@ -17,17 +17,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/polls/reply")
 public class PollReplyController {
-    
     @Autowired
     PollReplyService pollReplyService;
 
     @PostMapping()
     public CreatedPollReplyRest replyPoll(@RequestBody @Valid PollReplyRequestModel model) {
-
         System.out.println("model");
 
-        return new CreatedPollReplyRest(pollReplyService.createPollReply(model));
-                
+        return new CreatedPollReplyRest(pollReplyService.createPollReply(model));        
     }
-    
 }
