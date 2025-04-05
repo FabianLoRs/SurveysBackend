@@ -22,7 +22,7 @@ public class PollReplyController {
 
     @PostMapping()
     public CreatedPollReplyRest replyPoll(@RequestBody @Valid PollReplyRequestModel model) {
-        System.out.println("model");
+        // System.out.println("model");
 
         return new CreatedPollReplyRest(pollReplyService.createPollReply(model));        
     }

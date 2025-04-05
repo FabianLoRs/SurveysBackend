@@ -27,7 +27,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
         http.cors().and().csrf().disable();
 
-        http.authorizeRequests().antMatchers(HttpMethod.POST, "/users").permitAll()
+        http.authorizeRequests()
+            .antMatchers(HttpMethod.GET, "/").permitAll()
+            .antMatchers(HttpMethod.POST, "/users").permitAll()
             .antMatchers(HttpMethod.GET, "/polls/**/questions").permitAll()
             .antMatchers(HttpMethod.POST, "/polls/reply").permitAll()
             .anyRequest().authenticated();

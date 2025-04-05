@@ -1,12 +1,10 @@
 package com.flopr.surveysbackend.controllers;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.apache.tomcat.jni.Poll;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +25,6 @@ import com.flopr.surveysbackend.models.requests.PollCreationRequestModel;
 import com.flopr.surveysbackend.models.responses.CreatedPollRest;
 import com.flopr.surveysbackend.models.responses.PaginatedPollRest;
 import com.flopr.surveysbackend.models.responses.PollRest;
-import com.flopr.surveysbackend.models.responses.PollResultRest;
 import com.flopr.surveysbackend.models.responses.PollResultWrapperRest;
 import com.flopr.surveysbackend.services.PollService;
 import com.flopr.surveysbackend.utils.transformer.PollResultTransformer;
